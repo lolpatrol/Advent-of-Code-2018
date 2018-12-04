@@ -52,7 +52,40 @@ def part1and2(file):
     return int(max_g[1:])*guard_counter[max_g]['common'], int(most_freq_g[1:])*most_freq_min
 
 
+# Slightly shorter version
+def shorter(data):
+    data = sorted(data)
+    dates = []
+    guards = []
+    g_a = dict()
+    g_b = dict()
+    for line in data:
+        if 'begins' in line:
+            guard = line.split(' ')[3]
+            if guard not in guards:
+                guards.append(guard)
+                g_a[guard] = [0]*60
+                g_b[guard] = 0
+        if 'falls' in line:
+            date = line.split(' ')[0][6:]
+            if date not in dates:
+                dates.append(date)
+            start = int(line.split(' ')[1][3:-1])
+        elif 'wakes' in line:
+            stop = int(line.split(' ')[1][3:-1])
+            tot = stop - start
+            g_b[guard] += tot
+            for i in range(start, stop):
+                g_a[guard][i] += 1
+    most_sleepy = max(g_b, key=g_b.get)
+    most_slept = g_a[most_sleepy].index(max(g_a[most_sleepy]))
+    frequent_sleeper = max(g_a, key=lambda k: max(g_a.get(k)))
+    frequent_slept = g_a[frequent_sleeper].index(max(g_a[frequent_sleeper]))
+    return int(most_sleepy[1:])*most_slept, int(frequent_sleeper[1:])*frequent_slept
+
+
 file = open('day4_input.txt').read().splitlines()
 ans1, ans2 = part1and2(file)
-print('Part1: ', ans1, '\nPart 2: ', ans2)
+print('Part 1: ', ans1, '\nPart 2: ', ans2)
+print('Ans: ', shorter(file))
 
