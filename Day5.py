@@ -2,14 +2,12 @@ import string
 
 
 def part1(data):
-    reduced = ''
+    reduced = []
     for letter in data:
-        if reduced and letter.islower() and letter.upper() == reduced[-1]:
-            reduced = reduced[:-1]
-        elif reduced and letter.isupper() and letter.lower() == reduced[-1]:
-            reduced = reduced[:-1]
+        if reduced and abs(ord(letter) - ord(reduced[-1])) == 32:
+            reduced.pop()
         else:
-            reduced = reduced + letter
+            reduced.append(letter)
     return len(reduced)
 
 
