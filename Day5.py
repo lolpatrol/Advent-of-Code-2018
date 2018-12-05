@@ -1,3 +1,4 @@
+import string
 
 
 def part1(data):
@@ -13,13 +14,10 @@ def part1(data):
 
 
 def part2(data):
-    letters = 'abcdefghijklmnopqrstuvwxyz'
     smallest = len(data)
-    for letter in letters:
+    for letter in string.ascii_lowercase:
         temp = data.replace(letter, '').replace(letter.upper(), '')
-        size = part1(temp)
-        if size < smallest:
-            smallest = size
+        smallest = min(part1(temp), smallest)
     return smallest
 
 
