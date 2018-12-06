@@ -3,43 +3,34 @@ from scipy.ndimage.measurements import label
 
 
 def part1(data):
-    x_list = []
-    y_list = []
     num_coords = len(data)
+    c = []
     for line in data:
         x, y = line.split(', ')
-        x_list.append(int(x))
-        y_list.append(int(y))
-    row_max = max(x_list)
-    col_max = max(y_list)
-    dim_max = max(row_max, col_max)
-    grid = [[0 for x in range(dim_max+1)] for y in range(dim_max+1)]
+        c.append((int(x), int(y)))
+    dim_max = max(max(c[i][0] for i in range(len(c))), max(c[i][1] for i in range(len(c)))) + 1
+    grid = [[0 for x in range(dim_max)] for y in range(dim_max)]
     is_inf = [False]*num_coords
     for row in range(0, len(grid)):
         for col in range(0, len(grid[0])):
             dists = []
             for i in range(num_coords):
-                d = abs(x_list[i]-row)+abs(y_list[i]-col)
-                dists.append(d)
+                dists.append(abs(c[i][0] - row) + abs(c[i][1] - col))
             d_min = min(dists)
-            num_of_same = dists.count(d_min)
-            if num_of_same > 1:
-                grid[col][row] = '.'
+            if dists.count(d_min) > 1:
+                grid[col][row] = -1
             else:
                 local_ID = dists.index(d_min)  # Same ID as order in data
                 grid[col][row] = local_ID
                 if row == 0 or col == 0 or row == dim_max or col == dim_max:
                     is_inf[local_ID] = True
-    counts = []
-    for ID in range(0, num_coords):
-        if is_inf[ID] is not True:
-            counter = 0
-            for i in range(0, dim_max):
-                for j in range(0, dim_max):
-                    if grid[i][j] == ID:
-                        counter += 1
-            counts.append(counter)
-    return max(counts)
+    m = np.array(grid)
+    d = dict(zip(*np.unique(m.ravel(), return_counts=True)))
+    large = 0
+    for ID in d.keys():
+        if d[ID] > large and not is_inf[ID]:
+            large = d[ID]
+    return large
 
 
 def part2(data):
