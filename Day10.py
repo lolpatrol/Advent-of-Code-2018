@@ -24,10 +24,9 @@ def part_1_and_2(c, v):
             t_row[i] = row[i] + v[i][1]
         if max(t_col) - min(t_col) > old[1] and max(t_row) - min(t_row) > old[0]:
             break
-        else:
-            col = t_col
-            row = t_row
-            timer += 1
+        col = t_col
+        row = t_row
+        timer += 1
     print_ans(row, col)
     print('Time: ', timer)
 
